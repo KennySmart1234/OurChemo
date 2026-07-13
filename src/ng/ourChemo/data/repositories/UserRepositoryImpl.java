@@ -64,4 +64,16 @@ public class UserRepositoryImpl implements UserRepository {
             database.remove(target);
         }
 
+        @Override
+        public boolean existsById(Long id) {
+            User target = new User();
+            target.setId(id);
+            return database.contains(target);
+        }
+
+        @Override
+        public void deleteAll() {
+            database.clear();
+        }
+
 }

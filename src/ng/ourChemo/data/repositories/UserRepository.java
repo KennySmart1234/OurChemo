@@ -1,7 +1,6 @@
 package ng.ourChemo.data.repositories;
 
 import ng.ourChemo.data.models.User;
-
 import java.util.List;
 
 public interface UserRepository {
