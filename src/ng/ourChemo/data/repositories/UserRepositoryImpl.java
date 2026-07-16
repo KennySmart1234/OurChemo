@@ -7,12 +7,13 @@ import java.util.List;
 public class UserRepositoryImpl implements UserRepository {
 
 
-        private final List<User> database = new ArrayList<>();
-        private long idCounter = 1;
+        private static final List<User> users = new ArrayList<>();
+        private static int idCounter = 1;
 
         @Override
-        public long count() {
-            return database.size();
+        public int count() {
+
+            return users.size();
         }
 
         @Override
@@ -20,60 +21,60 @@ public class UserRepositoryImpl implements UserRepository {
             if (user.getId() == 0) {
                 user.setId(idCounter);
                 idCounter++;
-                database.add(user);
+                users.add(user);
             } else {
 
-                int index = database.indexOf(user);
+                int index = users.indexOf(user);
                 if (index != -1) {
-                    database.set(index, user);
+                    users.set(index, user);
                 } else {
-                    database.add(user);
+                    users.add(user);
                 }
             }
             return user;
         }
 
         @Override
-        public User findById(Long id) {
+        public User findById(int id) {
             User target = new User();
             target.setId(id);
 
-            int index = database.indexOf(target);
+            int index = users.indexOf(target);
             if (index != -1) {
-                return database.get(index);
+                return users.get(index);
             }
             return null;
         }
 
         @Override
-        public List<User> findAllById(Long id) {
-           return new ArrayList<>(database);
+        public List<User> findAllById(int id) {
+           return new ArrayList<>(users);
         }
 
         @Override
         public void delete(User user) {
             if (user != null) {
-                database.remove(user);
+                users.remove(user);
             }
         }
 
         @Override
-        public void deleteById(Long id) {
+        public void deleteById(int id) {
             User target = new User();
             target.setId(id);
-            database.remove(target);
+            users.remove(target);
         }
 
         @Override
-        public boolean existsById(Long id) {
+        public boolean existsById(int id) {
             User target = new User();
             target.setId(id);
-            return database.contains(target);
+            return users.contains(target);
         }
 
         @Override
         public void deleteAll() {
-            database.clear();
+            users.clear();
         }
 
 }

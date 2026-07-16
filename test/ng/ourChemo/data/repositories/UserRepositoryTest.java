@@ -1,46 +1,103 @@
+
 package ng.ourChemo.data.repositories;
 
+import ng.ourChemo.data.models.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import ng.ourChemo.data.repositories.UserRepository;
-import ng.ourChemo.data.repositories.UserRepositoryImpl;
+import java.util.List;
 
-public class UserRepositoryTest {
-    @Test
-    public void newRepositryShouldBeEmptyTest() {
-        UserRepository userRepository = new UserRepositoryImpl();
-        assert userRepository.count() == 0;
+import static org.junit.jupiter.api.Assertions.*;
+
+    public class UserRepositoryTest {
+
+        private UserRepository userRepository;
+
+        @BeforeEach
+        void setUp() {
+            userRepository = new UserRepositoryImpl();
+        }
+
+        @Test
+        void newRepositoryShouldBeEmptyTest() {
+            assertEquals(0, userRepository.count());
+        }
+
+        @Test
+        void saveOneUser_countShouldBeOneTest() {
+            User user = new User();
+
+            userRepository.save(user);
+
+            assertEquals(1, userRepository.count());
+        }
+
+        @Test
+        void saveTwoUsers_countShouldBeTwoTest() {
+            userRepository.save(new User());
+            userRepository.save(new User());
+
+            assertEquals(2, userRepository.count());
+        }
+
+        @Test
+        void saveUser_userShouldHaveGeneratedIdTest() {
+            User user = new User();
+
+            userRepository.save(user);
+
+            assertEquals(1, user.getId());
+        }
+
+        @Test
+        void findByIdWhenRepositoryIsEmpty_returnsNullTest() {
+            assertNull(userRepository.findById(1));
+        }
+
+
+        @Test
+        void existsByIdWhenUserDoesNotExist_returnsFalseTest() {
+            assertFalse(userRepository.existsById(1));
+        }
+
+        @Test
+        void deleteUser_countShouldDecreaseTest() {
+            User user = new User();
+
+            userRepository.save(user);
+
+            assertEquals(1, userRepository.count());
+
+            userRepository.delete(user);
+
+            assertEquals(0, userRepository.count());
+        }
+
+
+        @Test
+        void deleteAll_shouldRemoveAllUsersTest() {
+            userRepository.save(new User());
+            userRepository.save(new User());
+            userRepository.save(new User());
+
+            assertEquals(3, userRepository.count());
+
+            userRepository.deleteAll();
+
+            assertEquals(0, userRepository.count());
+        }
+
+        @Test
+        void findAllById_shouldReturnAllUsersInRepositoryTest() {
+            userRepository.save(new User());
+            userRepository.save(new User());
+
+            List<User> users = userRepository.findAllById(1);
+
+            assertNotNull(users);
+            assertEquals(2, users.size());
+        }
     }
 
-    @Test
-    public void testIHaveARepository_IaddaUser_ItIsNotEmpty() {
-        UserRepository userRepository = new UserRepositoryImpl();
-        assert userRepository.count() == 0;
-        userRepository.save(new ng.ourChemo.data.models.User());
-        assert userRepository.count() == 1;
-    }
 
-    @Test
-    public void testIHaveARepository_IaddaUser_ItIsNotEmpty_IaddaAnotherUser_ItIsNotEmpty() {
-        UserRepository userRepository = new UserRepositoryImpl();
-        assert userRepository.count() == 0;
-        userRepository.save(new ng.ourChemo.data.models.User());
-        assert userRepository.count() == 1;
-        userRepository.save(new ng.ourChemo.data.models.User());
-        assert userRepository.count() == 2;
-    }
 
-    @Test
-    public void findByIdReturnsNullWhenUserNotFound() {
-        UserRepository userRepository = new UserRepositoryImpl();
-        assert userRepository.findById(1) == null;
-    }
-
-//    @Test
-//    public void findByIdReturnsUserWhenFound() {
-//        UserRepository userRepository = new UserRepositoryImpl();
-//        ng.ourChemo.data.models.User user = new ng.ourChemo.data.models.User();
-//        userRepository.save(user);
-//        assert userRepository.findById(user.getId()) != null;
-//    }
-}
